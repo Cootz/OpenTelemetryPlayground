@@ -1,4 +1,5 @@
-﻿using OpenTelemetry.Logs;
+﻿using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -34,7 +35,12 @@ namespace OpenTelemetryPlayground
                     tracing.AddOtlpExporter();
                 });
 
-            builder.Logging.AddOpenTelemetry(loging => loging.AddOtlpExporter(config => config.Endpoint = new Uri("http://loki:3100")));
+            builder.Logging.AddOpenTelemetry(loging => 
+                loging.AddOtlpExporter(config =>
+                {
+                    config.Endpoint = new Uri("http://loki:3100/otlp");
+                    config.Protocol = OtlpExportProtocol.HttpProtobuf;
+                }));
             
             return builder;
         }
