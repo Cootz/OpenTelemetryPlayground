@@ -19,7 +19,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Default SSL cert is issued to 'localhost' which conflicts with docker internal name 'opentelemetryplayground'.
+// This missmatch causes SSL error when prometheus connects to the target, so I turn it off for now
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

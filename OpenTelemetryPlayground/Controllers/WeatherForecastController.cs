@@ -20,7 +20,7 @@ namespace OpenTelemetryPlayground.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public IActionResult Get()
         {
             WeatherForecast[] weatherForecast = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -30,11 +30,12 @@ namespace OpenTelemetryPlayground.Controllers
             })
             .ToArray();
 
-            _logger.LogInformation("Sending {WeatherForcastAmount} weather forcast(s)", weatherForecast.Length);
+            _logger.LogInformation(
+                "Weather forecast for {StartDate}-{EndDate} successfully send", 
+                DateTime.Now.AddDays(1).Date, 
+                DateTime.Now.AddDays(5).Date);
 
-
-
-            return weatherForecast;
+            return Ok(weatherForecast);
         }
     }
 }

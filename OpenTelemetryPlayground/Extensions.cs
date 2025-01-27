@@ -34,7 +34,7 @@ namespace OpenTelemetryPlayground
                     tracing.AddOtlpExporter();
                 });
 
-            builder.Logging.AddOpenTelemetry(loging => loging.AddOtlpExporter());
+            builder.Logging.AddOpenTelemetry(loging => loging.AddOtlpExporter(config => config.Endpoint = new Uri("http://loki:3100")));
             
             return builder;
         }
