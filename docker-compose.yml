@@ -3,6 +3,7 @@ version: '3.7'
 volumes:
   prometheus_data: {}
   grafana_data: {}
+  tempo_data: {}
 
 services:
   opentelemetryplayground:
@@ -49,6 +50,21 @@ services:
       - grafanaalloy 
     restart: always
 
+  tempo:
+    image: grafana/tempo
+    command: "-config.file=/etc/tempo.yaml" 
+    volumes:
+      - ./config/tempo/tempo.yaml:/etc/tempo.yaml
+      - tempo_data:/var/tempo
+    environment:
+      - DEBUG_BLOCK=0
+    ports:
+      - "3200:3200"
+      - "2345:2345"
+    depends_on:
+      - opentelemetryplayground
+      - grafanaalloy
+
   grafana:
     image: grafana/grafana-enterprise
     volumes:
@@ -56,6 +72,7 @@ services:
     depends_on:
       - prometheus
       - loki
+      - tempo
     ports:
       - 3000:3000
     restart: always

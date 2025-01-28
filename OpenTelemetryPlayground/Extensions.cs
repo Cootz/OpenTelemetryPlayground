@@ -32,7 +32,11 @@ namespace OpenTelemetryPlayground
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation();
 
-                    tracing.AddOtlpExporter();
+                    tracing.AddOtlpExporter(config =>
+                    {
+                        config.Endpoint = new Uri("http://grafanaalloy:4318/v1/traces");
+                        config.Protocol = OtlpExportProtocol.HttpProtobuf;
+                    });
                 });
 
             builder.Logging.AddOpenTelemetry(loging => 
