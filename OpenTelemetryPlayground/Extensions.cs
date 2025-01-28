@@ -38,7 +38,7 @@ namespace OpenTelemetryPlayground
             builder.Logging.AddOpenTelemetry(loging => 
                 loging.AddOtlpExporter(config =>
                 {
-                    config.Endpoint = new Uri("http://loki:3100/otlp");
+                    config.Endpoint = new Uri("http://grafanaalloy:4318/v1/logs");
                     config.Protocol = OtlpExportProtocol.HttpProtobuf;
                 }));
             

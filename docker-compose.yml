@@ -15,10 +15,14 @@ services:
      - 8081:8081 
     restart: always
 
-  promtail:
-    image: grafana/promtail
+  grafanaalloy:
+    image: grafana/alloy
+    command:  run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
     volumes:
-      - ./config/loki/:/mnt/config/
+      - ./config/grafanaalloy/config.alloy:/etc/alloy/config.alloy 
+    ports:
+     - 12345:12345
+     - 4318:4318
     depends_on:
       - opentelemetryplayground
     restart: always
@@ -42,7 +46,7 @@ services:
       - 3100:3100
     depends_on:
       - opentelemetryplayground
-      - promtail 
+      - grafanaalloy 
     restart: always
 
   grafana:
