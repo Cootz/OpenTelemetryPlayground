@@ -1,4 +1,5 @@
-﻿using OpenTelemetry.Exporter;
+﻿using OpenTelemetry;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -16,32 +17,27 @@ namespace OpenTelemetryPlayground
                 openTelemetry.IncludeFormattedMessage = true;
             });
 
-            builder.Services.AddOpenTelemetry()
+            var otel = builder.Services.AddOpenTelemetry()
                 .ConfigureResource(resource => resource.AddService("WeatherForecast"))
                 .WithMetrics(metrics =>
                 {
                     metrics
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation();
-
-                    metrics.AddPrometheusExporter();
                 })
                 .WithTracing(tracing =>
                 {
                     tracing
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation();
-
-                    tracing.AddOtlpExporter();
                 });
 
-            builder.Logging.AddOpenTelemetry(loging => 
-                loging.AddOtlpExporter(config =>
-                {
-                    config.Endpoint = new Uri("http://loki:3100/otlp");
-                    config.Protocol = OtlpExportProtocol.HttpProtobuf;
-                }));
-            
+            var OtlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+            if (OtlpEndpoint != null)
+            {
+                otel.UseOtlpExporter();
+            }
+
             return builder;
         }
     }

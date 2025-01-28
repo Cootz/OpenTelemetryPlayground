@@ -25,7 +25,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
-app.MapPrometheusScrapingEndpoint();
 app.MapControllers();
 
 app.Run();
